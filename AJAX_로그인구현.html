@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ajax 통신 연습</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        .section {
+            border: 1px solid;
+            width: 400px;
+            height: 200px;
+            margin: 0 auto;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: aliceblue;
+        }
+
+        .section .article {
+            width: 300px;
+        }
+
+        .section .article .divid, .divpw{
+            padding: 10px;
+        }
+
+        .section .article .divpw { 
+            padding-top: 0px;
+        }
+
+         .section .article .btn-login {
+            border: none;
+            width: 300px;
+            height: 40px;
+            background: navajowhite;
+            border-radius: 20px;
+            text-align: center;
+            color: navy;
+        }
+
+    </style>
+</head>
+<body>
+    <section class="section">
+        <article class="article">
+            <span><b>로그인</b></span>
+           <div class="divid">
+                <label for=""> 아이디 : </label>
+                <input type="text" class="id" placeholder="id"><br>
+           </div>
+            <div class="divpw" >
+                <label for=""> 비밀번호 : </label>
+                <input type="password" class="pw" placeholder="password"><br>
+            </div>
+            <button type="button" class="btn-login">로그인</button>
+            <!-- <div class="dataField">data</div> -->
+        </article>
+    </section>
+
+    <script>
+        // let userData; 
+        function success(로그인성공) {
+            document.write(`
+            ${로그인성공.name}님 환영합니다! <br>
+            등급을 보아하니 ${로그인성공.grade}이시군요! <br>
+            멋사코인은 ${로그인성공.phone.slice(-4)}억 원 보유 중 입니다.
+            `);
+        }
+
+        function fail() {
+            document.write('로그인 실패하였습니다. 다시 한번 입력해주세요!');
+        }
+
+        $('.btn-login').click(function() {
+            $.ajax({
+                url:'https://raw.githubusercontent.com/charile1/ajaxlogintest/main/userdata.json', 
+                async: true, 
+                success: function(response){
+                    console.log(typeof response); // string  - json은 string 형태입니다.
+                    console.log(JSON.parse(response)); // json을 오브젝트 형태로 출력합니다.
+                    let id = $('.id').val()
+                    let pw = $('.pw').val()
+
+                    response = JSON.parse(response);
+                    userData = response.find(user => user.id === id && user.pw === pw);
+
+                    // 로그인 성공시
+                    if (userData) {
+                        success(userData);
+                    }
+                    // 로그인 실패시
+                    else {
+                        fail();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
